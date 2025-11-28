@@ -9,6 +9,7 @@ babel.config.json
 rollup.config.mjs
 tsconfig.json
 temp
+md-assets
 
 # Logs
 logs
