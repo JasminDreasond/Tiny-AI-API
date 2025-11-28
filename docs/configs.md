@@ -310,8 +310,8 @@ Sets file data for the selected session history.
 
 | Name        | Type      | Required | Description                                                                                               |
 |-------------|-----------|----------|-----------------------------------------------------------------------------------------------------------|
-| `mime`      | `string`  | Yes      | The MIME type of the file (e.g., 'text/plain', 'application/pdf').                                         |
-| `data`      | `string`  | Yes      | The file content, either as a string or base64-encoded.                                                    |
+| `mime`      | `string`  | Yes      | The MIME type of the file (e.g., 'text/plain', 'application/pdf') (optional).                                         |
+| `data`      | `string`  | Yes      | The file content, either as a string or base64-encoded (optional).                                                    |
 | `isBase64`  | `boolean` | No       | A flag indicating whether the `data` is already base64-encoded. Defaults to `false`.                      |
 | `tokenAmount`| `number` | No       | The token count associated with the file data (optional).                                                 |
 | `id`        | `string`  | No       | The session ID. If omitted, the currently selected session history ID will be used.                       |

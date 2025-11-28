@@ -1378,3 +1378,56 @@ try {
 ```
 
 This method is responsible for adding new entries into the session history while tracking token-related data. The `tokenData` can be passed to associate additional information, like a count, with the new data entry.
+
+---
+
+### `resetContentData(id)`
+
+Resets all stored data associated with a given session.
+
+---
+
+#### Parameters
+
+| Name | Type     | Required | Description                                                                 |
+| ---- | -------- | -------- | --------------------------------------------------------------------------- |
+| `id` | `string` | No       | The session ID. If omitted, the currently selected session ID will be used. |
+
+---
+
+#### Returns
+
+| Type     | Description                                                                                                                                                                                                                                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `number` | A status code indicating the result of the reset operation.<br><br>**Return codes:**<br>- `0`: No valid session was found.<br>- `1`: A valid session was found but contained no items to delete.<br>- `2`: Items were successfully deleted. |
+
+---
+
+#### Behavior
+
+* Retrieves the target session ID using `this.getId(id)`.
+* Validates whether the selected session ID exists in the session history.
+* If the session contains stored items, it repeatedly deletes the first index (`deleteIndex(0)`) until the session becomes empty.
+* Returns a numeric status code representing the outcome.
+
+---
+
+#### Example Usage
+
+```js
+const status = sessionManager.resetContentData();
+
+switch (status) {
+  case 0:
+    console.log("No valid session found.");
+    break;
+  case 1:
+    console.log("Session found but already empty.");
+    break;
+  case 2:
+    console.log("Session data successfully cleared.");
+    break;
+}
+```
+
+This method ensures that a session's stored data is fully cleared, providing clear return codes to help you handle different outcomes in your application logic.

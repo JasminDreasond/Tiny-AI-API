@@ -1,7 +1,7 @@
 {
   "name": "tiny-ai-api",
   "description": "A customizable and extensible client api for managing conversations and AI interactions, currently supporting the **Google Gemini** API — with flexibility to support any similar AI APIs.",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.mts",
@@ -19,7 +19,7 @@
     "js-base64": "^3.7.8",
     "jsonrepair": "^3.12.0",
     "object-hash": "^3.0.0",
-    "tiny-essentials": "^1.20.0"
+    "tiny-essentials": "^1.24.3"
   },
   "keywords": [
     "ai",
@@ -61,8 +61,8 @@
     "@babel/preset-env": "^7.26.9",
     "@rollup/plugin-commonjs": "^28.0.3",
     "@rollup/plugin-node-resolve": "^16.0.1",
-    "@rollup/plugin-typescript": "^12.1.2",
     "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.1.2",
     "@types/events": "^3.0.3",
     "@types/node": "^24.0.0",
     "@types/object-hash": "^3.0.6",

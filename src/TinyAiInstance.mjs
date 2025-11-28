@@ -6,7 +6,7 @@ import { encode as encodeBase64 } from 'js-base64';
 /**
  * @typedef {Object} SessionDataContent
  * @property {AIContentData[]} data
- * @property {string[]} ids
+ * @property {number[]} ids
  * @property {{ data: Array<TokenCount>; [key: string]: * }} tokens
  * @property {{ data: Array<string>; [key: string]: * }} hash
  * @property {string|null} systemInstruction
@@ -1074,6 +1074,34 @@ class TinyAiInstance {
   }
 
   /**
+   * Resets all stored data associated with a given session.
+   *
+   * This method resolves the target session ID (either the one provided or the
+   * currently selected session) and removes all indexed items from its history.
+   *
+   * **Return codes:**
+   * - `0`: No valid session was found; nothing was reset.
+   * - `1`: A valid session was found but had no items to delete.
+   * - `2`: Items were successfully deleted during the reset process.
+   *
+   * @param {string} [id] - The session ID. If omitted, the currently selected session ID will be used.
+   * @returns {number} A status code indicating the reset result.
+   */
+  resetContentData(id) {
+    let result = 0;
+    const selectedId = this.getId(id);
+    if (selectedId && this.history[selectedId]) {
+      result = 1;
+      const data = this.history[selectedId];
+      while (data.ids.length > 0) {
+        result = 2;
+        this.deleteIndex(0);
+      }
+    }
+    return result;
+  }
+
+  /**
    * Get the data associated with a specific session history ID.
    *
    * @param {string} [id] - The session ID. If omitted, the currently selected session history ID will be used.
@@ -1138,7 +1166,7 @@ class TinyAiInstance {
    * **Note**: This method does not manage the token count automatically. It assumes that token data has been added
    * to the history using the `addData` method.
    *
-   * @param {string} msgId - The unique ID of the message in the session history.
+   * @param {number} msgId - The unique ID of the message in the session history.
    * @param {string} [id] - The session ID. If omitted, the currently selected session history ID will be used.
    * @returns {TokenCount|null} The token data associated with the message with the given ID, or `null` if the message is not found.
    */
@@ -1170,7 +1198,7 @@ class TinyAiInstance {
   /**
    * Retrieves the hash of a message based on its ID from the selected session history.
    *
-   * @param {string} msgId - The ID of the message whose hash is being retrieved.
+   * @param {number} msgId - The ID of the message whose hash is being retrieved.
    * @param {string} [id] - The session ID. If omitted, the currently selected session history ID will be used.
    * @returns {string|null} The hash value of the message with the specified ID, or null if the message ID is invalid or does not exist.
    */
@@ -1213,7 +1241,7 @@ class TinyAiInstance {
   /**
    * Retrieves a specific message by its ID from the session history.
    *
-   * @param {string} msgId - The ID of the message to retrieve.
+   * @param {number} msgId - The ID of the message to retrieve.
    * @param {string} [id] - The session ID. If omitted, the currently selected session history ID will be used.
    * @returns {AIContentData|null} The message data associated with the given ID, or `null` if the message ID is invalid or does not exist.
    */
@@ -1229,7 +1257,7 @@ class TinyAiInstance {
   /**
    * Retrieve the index of a specific message ID in the session history.
    *
-   * @param {string} msgId - The message ID to search for.
+   * @param {number} msgId - The message ID to search for.
    * @param {string} [id] - The session ID. If omitted, the currently selected session history ID will be used.
    * @returns {number} The index of the message ID in the session history, or `-1` if not found.
    */
@@ -1475,8 +1503,8 @@ class TinyAiInstance {
   /**
    * Sets file data for the selected session history.
    *
-   * @param {string} [mime] - The MIME type of the file (e.g., 'text/plain', 'application/pdf').
-   * @param {string} [data] - The file content, either as a string or base64-encoded.
+   * @param {string} [mime] - The MIME type of the file (e.g., 'text/plain', 'application/pdf') (optional).
+   * @param {string} [data] - The file content, either as a string or base64-encoded (optional).
    * @param {boolean} [isBase64=false] - A flag indicating whether the `data` is already base64-encoded. Defaults to false.
    * @param {number} [tokenAmount] - The token count associated with the file data (optional).
    * @param {string} [id] - The session ID. If omitted, the currently selected session history ID will be used.
