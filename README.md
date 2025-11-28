@@ -161,7 +161,7 @@ Did you like this module? It’s part of the **Tiny Essentials** collection — 
 ---
 
 <div align="center">
-<a href="./img/"><img src="./img/66a177ed-8dbb-4e4b-a9e2-d7b2311e62b6.png" height="300" /></a>
+<a href="./img/"><img src="./md-assets/img/66a177ed-8dbb-4e4b-a9e2-d7b2311e62b6.png" height="300" /></a>
 <br/>
 Made with tiny love!
 </div>
