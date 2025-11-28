@@ -711,18 +711,6 @@ This method is used to access a single message stored in a session’s history u
 
 ---
 
-#### Implementation
-
-```js
-getMsgByIndex(index, id) {
-  const history = this.getData(id);
-  if (history && history.data[index]) return history.data[index];
-  return null;
-}
-```
-
----
-
 #### Behavior
 
 - `getData(id)` is used to retrieve the session history object.
@@ -776,21 +764,6 @@ This method allows you to access a specific message stored in a session by refer
 
 ---
 
-#### Implementation
-
-```js
-getMsgById(msgId, id) {
-  const history = this.getData(id);
-  if (history) {
-    const index = this.getIndexOfId(msgId);
-    if (history.data[index]) return history.data[index];
-  }
-  return null;
-}
-```
-
----
-
 #### Behavior
 
 - Uses `getData(id)` to fetch the session history.
@@ -839,18 +812,6 @@ This method searches for a specific message ID inside the session's `ids` array 
 
 ---
 
-#### Implementation
-
-```js
-getIndexOfId(msgId, id) {
-  const history = this.getData(id);
-  if (history) return history.ids.indexOf(msgId);
-  return -1;
-}
-```
-
----
-
 #### Behavior
 
 - Accesses the current or specified session via `getData(id)`.
@@ -895,18 +856,6 @@ This method is used to fetch the message ID that corresponds to a given index in
 |----------|----------|----------|-----------------------------------------------------------------------------|
 | `index`  | `number` | Yes      | The index position of the message ID to retrieve.                           |
 | `id`     | `string` | No       | The session ID. If omitted, the currently selected session will be used.   |
-
----
-
-#### Implementation
-
-```js
-getIdByIndex(index, id) {
-  const history = this.getData(id);
-  if (history) return history.data[index] ? history.ids[index] : -1;
-  return -1;
-}
-```
 
 ---
 
@@ -962,26 +911,6 @@ This method removes all data related to a message from the session history array
 | Type      | Description                                                                 |
 |-----------|-----------------------------------------------------------------------------|
 | `boolean` | Returns `true` if the entry was successfully deleted; otherwise `false`.    |
-
----
-
-#### Implementation
-
-```js
-deleteIndex(index, id) {
-  const history = this.getData(id);
-  if (history && history.data[index]) {
-    const msgId = this.getIdByIndex(index);
-    history.data.splice(index, 1);
-    history.ids.splice(index, 1);
-    history.hash.data.splice(index, 1);
-    history.tokens.data.splice(index, 1);
-    this.emit('deleteIndex', index, msgId, this.getId(id));
-    return true;
-  }
-  return false;
-}
-```
 
 ---
 
@@ -1050,32 +979,6 @@ Replaces an existing message entry in the session history at the specified index
 
 ---
 
-#### Implementation
-
-```js
-replaceIndex(index, data, tokens, id) {
-  const history = this.getData(id);
-  if (history && history.data[index] && (data || tokens)) {
-    let hash = null;
-
-    if (data) {
-      hash = objHash(data);
-      history.data[index] = data;
-      history.hash.data[index] = hash;
-    }
-
-    if (tokens) history.tokens.data[index] = tokens;
-
-    this.emit('replaceIndex', index, data, tokens, hash, this.getId(id));
-    return true;
-  }
-
-  return false;
-}
-```
-
----
-
 #### Example Usage
 
 ```js
@@ -1115,20 +1018,6 @@ Retrieves the index of the last entry in the session history.
 
 ---
 
-#### Implementation
-
-```js
-getLastIndex(id) {
-  const history = this.getData(id);
-  if (history && history.data[history.data.length - 1]) {
-    return history.data.length - 1;
-  }
-  return -1;
-}
-```
-
----
-
 #### Example Usage
 
 ```js
@@ -1164,19 +1053,6 @@ Retrieves the data of the last entry in the session history.
 - Uses `getData(id)` to retrieve the session history.
 - Checks if the last entry exists in `history.data`.
 - Returns the last item if valid; otherwise returns `null`.
-
----
-
-#### Implementation
-
-```js
-getLastIndexData(id) {
-  const history = this.getData(id);
-  if (history && history.data[history.data.length - 1])
-    return history.data[history.data.length - 1];
-  return null;
-}
-```
 
 ---
 
@@ -1219,18 +1095,6 @@ Checks if the session history has at least one valid entry.
 
 ---
 
-#### Implementation
-
-```js
-existsFirstIndex(id) {
-  const history = this.getData(id);
-  if (history && history.data[0]) return true;
-  return false;
-}
-```
-
----
-
 #### Example Usage
 
 ```js
@@ -1269,18 +1133,6 @@ Retrieves the first entry from the session history.
 - Uses `getData(id)` to retrieve the current session's history object.
 - Returns the first element in the `history.data` array if present.
 - Returns `null` if the session history is invalid or empty.
-
----
-
-#### Implementation
-
-```js
-getFirstIndexData(id) {
-  const history = this.getData(id);
-  if (history && history.data[0]) return history.data[0];
-  return null;
-}
-```
 
 ---
 
@@ -1332,35 +1184,6 @@ Adds new data to the selected session history.
 - Uses `this.getId(id)` to retrieve the selected session ID.
 - If the session history exists for the selected session, it increments the `nextId` and adds the new data entry to the `data`, `tokens.data`, `ids`, and `hash.data` arrays.
 - Emits the `addData` event with the new ID, data, token content, hash, and session ID.
-
----
-
-#### Implementation
-
-```js
-addData(data, tokenData = { count: null }, id = undefined) {
-  const selectedId = this.getId(id);
-  if (this.history[selectedId]) {
-    if (typeof this.history[selectedId].nextId !== 'number') this.history[selectedId].nextId = 0;
-    const newId = this.history[selectedId].nextId;
-    this.history[selectedId].nextId++;
-    const hash = objHash(data);
-
-    const tokenContent = objType(tokenData, 'object')
-      ? tokenData
-      : { count: typeof tokenData === 'number' ? tokenData : null };
-
-    this.history[selectedId].data.push(data);
-    this.history[selectedId].tokens.data.push(tokenContent);
-    this.history[selectedId].ids.push(newId);
-    this.history[selectedId].hash.data.push(hash);
-
-    this.emit('addData', newId, data, tokenContent, hash, selectedId);
-    return newId;
-  }
-  throw new Error('Invalid history id data!');
-}
-```
 
 ---
 

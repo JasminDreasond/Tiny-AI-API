@@ -56,28 +56,6 @@ Sets a prompt for the selected session history.
 
 ---
 
-#### Implementation
-
-```js
-setPrompt(promptData, tokenAmount, id) {
-  const selectedId = this.getId(id);
-  if (this.history[selectedId]) {
-    if (typeof promptData === 'string') {
-      const hash = objHash(promptData);
-      this.history[selectedId].prompt = promptData;
-      this.history[selectedId].hash.prompt = hash;
-    }
-
-    if (typeof tokenAmount === 'number') this.history[selectedId].tokens.prompt = tokenAmount;
-    this.emit('setPrompt', promptData, selectedId);
-    return;
-  }
-  throw new Error('Invalid history id data!');
-}
-```
-
----
-
 #### Example Usage
 
 ```js
@@ -123,24 +101,6 @@ Retrieves the prompt of the selected session history.
 - Uses `this.getId(id)` to retrieve the selected session ID.
 - If the session history exists for the selected session and the `prompt` is a non-empty string, it returns the prompt.
 - If no valid prompt exists, it returns `null`.
-
----
-
-#### Implementation
-
-```js
-getPrompt(id) {
-  const selectedId = this.getId(id);
-  if (
-    this.history[selectedId] &&
-    typeof this.history[selectedId].prompt === 'string' &&
-    this.history[selectedId].prompt.length > 0
-  ) {
-    return this.history[selectedId].prompt;
-  }
-  return null;
-}
-```
 
 ---
 
@@ -198,29 +158,6 @@ Sets the first dialogue for the selected session history.
 
 ---
 
-#### Implementation
-
-```js
-setFirstDialogue(dialogue, tokenAmount, id) {
-  const selectedId = this.getId(id);
-  if (this.history[selectedId]) {
-    if (typeof dialogue === 'string') {
-      const hash = objHash(dialogue);
-      this.history[selectedId].firstDialogue = dialogue;
-      this.history[selectedId].hash.firstDialogue = hash;
-    }
-
-    if (typeof tokenAmount === 'number')
-      this.history[selectedId].tokens.firstDialogue = tokenAmount;
-    this.emit('setFirstDialogue', dialogue, selectedId);
-    return;
-  }
-  throw new Error('Invalid history id data!');
-}
-```
-
----
-
 #### Example Usage
 
 ```js
@@ -264,24 +201,6 @@ Retrieves the first dialogue from the selected session history.
 - Uses `this.getId(id)` to retrieve the selected session ID.
 - If the session history exists for the selected session and the first dialogue is a valid string, it returns the first dialogue.
 - If no first dialogue is set or the value is empty/invalid, it returns `null`.
-
----
-
-#### Implementation
-
-```js
-getFirstDialogue(id) {
-  const selectedId = this.getId(id);
-  if (
-    this.history[selectedId] &&
-    typeof this.history[selectedId].firstDialogue === 'string' &&
-    this.history[selectedId].firstDialogue.length > 0
-  ) {
-    return this.history[selectedId].firstDialogue;
-  }
-  return null;
-}
-```
 
 ---
 
@@ -354,31 +273,6 @@ This would set the file data for the session with ID `'session123'`, using the M
 
 #### Implementation
 
-```js
-setFileData(mime, data, isBase64 = false, tokenAmount = undefined, id = undefined) {
-  const selectedId = this.getId(id);
-  if (this.history[selectedId]) {
-    let hash;
-    if (typeof data === 'string' && typeof mime === 'string') {
-      this.history[selectedId].file = {
-        mime,
-        data,
-        base64: !isBase64 ? Base64.encode(data) : data,
-      };
-      hash = objHash(this.history[selectedId].file);
-      this.history[selectedId].hash.file = hash;
-    }
-
-    if (typeof tokenAmount === 'number') this.history[selectedId].tokens.file = tokenAmount;
-    this.emit('setFileData', this.history[selectedId].file, hash, selectedId);
-    return;
-  }
-  throw new Error('Invalid history id data!');
-}
-```
-
----
-
 This method allows you to store file data (either as raw text or base64-encoded) along with an optional MIME type and token count in a selected session history. It also calculates a hash for the file data and emits an event with the new file data.
 
 ---
@@ -425,22 +319,6 @@ This would remove the file data from the session with ID `'session123'`.
 ---
 
 #### Implementation
-
-```js
-removeFileData(id) {
-  const selectedId = this.getId(id);
-  if (this.history[selectedId]) {
-    delete this.history[selectedId].file;
-    delete this.history[selectedId].hash.file;
-    delete this.history[selectedId].tokens.file;
-    this.emit('setFileData', null, null, selectedId);
-    return;
-  }
-  throw new Error('Invalid history id data!');
-}
-```
-
----
 
 This method allows you to remove any stored file data from a specific session's history, including the file content, its hash, and associated token data. It also emits an event to indicate that the file data has been removed.
 
@@ -504,23 +382,6 @@ This would retrieve and display the MIME type and base64-encoded content of the 
 ---
 
 #### Implementation
-
-```js
-getFileData(id) {
-  const selectedId = this.getId(id);
-  if (
-    this.history[selectedId] &&
-    this.history[selectedId].file &&
-    typeof this.history[selectedId].file.data === 'string' &&
-    typeof this.history[selectedId].file.mime === 'string'
-  ) {
-    return this.history[selectedId].file;
-  }
-  return null;
-}
-```
-
----
 
 This method provides access to the file data stored in the selected session's history, including the MIME type and the base64-encoded content of the file. If no valid file data exists, it returns `null`.
 
@@ -586,27 +447,6 @@ This would set the system instruction `'Ensure system stability'` for the sessio
 
 #### Implementation
 
-```js
-setSystemInstruction(data, tokenAmount, id) {
-  const selectedId = this.getId(id);
-  if (this.history[selectedId]) {
-    if (typeof data === 'string') {
-      const hash = objHash(data);
-      this.history[selectedId].systemInstruction = data;
-      this.history[selectedId].hash.systemInstruction = hash;
-    }
-
-    if (typeof tokenAmount === 'number')
-      this.history[selectedId].tokens.systemInstruction = tokenAmount;
-    this.emit('setSystemInstruction', data, selectedId);
-    return;
-  }
-  throw new Error('Invalid history id data!');
-}
-```
-
----
-
 This method allows you to set a system instruction for a given session, optionally associating token data with it. The session is identified by its history ID, and it throws an error if the provided session ID or data is invalid.
 
 ---
@@ -658,21 +498,6 @@ This would attempt to retrieve the system instruction for the session with ID `'
 ---
 
 #### Implementation
-
-```js
-getSystemInstruction(id) {
-  const selectedId = this.getId(id);
-  if (
-    this.history[selectedId] &&
-    typeof this.history[selectedId].systemInstruction === 'string'
-  ) {
-    return this.history[selectedId].systemInstruction;
-  }
-  return null;
-}
-```
-
----
 
 This method allows you to retrieve the system instruction for a specified session. If no instruction is found or the session ID is invalid, it will return `null`.
 
@@ -726,17 +551,6 @@ This would attempt to retrieve the token count for the `prompt` category in the 
 
 #### Implementation
 
-```js
-getTokens(where, id) {
-  const selectedId = this.getId(id);
-  if (this.history[selectedId] && typeof this.history[selectedId].tokens[where] === 'number')
-    return this.history[selectedId].tokens[where];
-  return null;
-}
-```
-
----
-
 This method allows you to retrieve the token count for a specific category (such as `prompt`, `file`, or `systemInstruction`) for the selected session. If the token count is not available or the session ID is invalid, it returns `null`.
 
 ---
@@ -788,17 +602,6 @@ This would attempt to retrieve the hash value for the `prompt` item in the sessi
 ---
 
 #### Implementation
-
-```js
-getHash(where, id) {
-  const selectedId = this.getId(id);
-  if (this.history[selectedId] && typeof this.history[selectedId].hash[where] === 'string')
-    return this.history[selectedId].hash[where];
-  return null;
-}
-```
-
----
 
 This method allows you to retrieve the hash value for a specific item (such as `prompt`, `file`, or `systemInstruction`) in the selected session. If the hash is not available or the session ID is invalid, it returns `null`.
 
@@ -856,24 +659,6 @@ This would start a new data session with the ID `'session123'`, select it as the
 
 #### Implementation
 
-```js
-startDataId(id, selected = false) {
-  this.history[id] = {
-    data: [],
-    ids: [],
-    tokens: { data: [] },
-    hash: { data: [] },
-    systemInstruction: null,
-    model: null,
-  };
-  if (selected) this.selectDataId(id);
-  this.emit('startDataId', this.history[id], id, selected ? true : false);
-  return this.history[id];
-}
-```
-
----
-
 This method is responsible for initializing a new session with a specific session ID and optional selection flag. It ensures that each session has default, empty structures ready to hold data and other session-specific information. The event `startDataId` is emitted when the session is created.
 
 ---
@@ -925,19 +710,5 @@ In this example, the session with ID `'session123'` will be stopped and removed 
 ---
 
 #### Implementation
-
-```js
-stopDataId(id) {
-  if (this.history[id]) {
-    delete this.history[id];
-    if (this.getId() === id) this.selectDataId(null);
-    this.emit('stopDataId', id);
-    return true;
-  }
-  return false;
-}
-```
-
----
 
 This method is used to stop and remove a data session by its ID, ensuring that the session history is properly updated. If the stopped session is the active one, it clears the active session as well.
