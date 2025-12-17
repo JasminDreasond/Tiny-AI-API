@@ -12,7 +12,7 @@
       "import": "./dist/index.mjs"
     }
   },
-  "repository": "https://github.com/JasminDreasond/Tiny-AI-API.git",
+  "repository": "https://github.com/Tiny-Essentials/Tiny-AI-API.git",
   "author": "Yasmin Seidel (JasminDreasond)",
   "license": "AGPL-3.0-only",
   "dependencies": {
