@@ -157,7 +157,7 @@ This project is licensed under the AGPL-3.0 License - see the [LICENSE](./LICENS
 ## 🔙 Back to Tiny Essentials
 
 Did you like this module? It’s part of the **Tiny Essentials** collection — a set of minimal yet powerful tools to make development easier.
-👉 [Click here to explore more Tiny Essentials modules](https://github.com/JasminDreasond/Tiny-Essentials)
+👉 [Click here to explore more Tiny Essentials modules](https://github.com/Tiny-Essentials/Tiny-Essentials)
 
 ---
 
